@@ -10,6 +10,9 @@ class CleanerTest(unittest.TestCase):
     test_dataset_path = 'test_dataset.xlsx'
     cleaned_dataset_path = 'cleaned_dataset.xlsx'
 
+    # List of columns to be removed on the cleaned dataset
+    columns_to_be_removed = [grades_cleaner.name_column, grades_cleaner.surname_column]
+
     def setUp(self):
         """"setUp creates the test dataset with valid data"""
         df = pd.DataFrame(
@@ -58,7 +61,7 @@ class CleanerTest(unittest.TestCase):
         )
 
         with pd.ExcelWriter(self.test_dataset_path) as writer:
-            df.to_excel(writer, header=False, index=False)
+            df.to_excel(writer, index=False)
 
     def tearDown(self):
         """tearDown deletes both the source and the target files to clean up after the tests"""
@@ -71,6 +74,14 @@ class CleanerTest(unittest.TestCase):
         """Tests that the cleaned dataset is created, but doesn't validate its contents"""
         grades_cleaner.clean_dataset(self.test_dataset_path, self.cleaned_dataset_path)
         self.assertTrue(os.path.exists(self.cleaned_dataset_path), "Cleaned dataset not created")
+
+    def test_join_first_and_last_names(self):
+        """Tests that the first and last name columns are joined into one, removing the old ones"""
+        grades_cleaner.clean_dataset(self.test_dataset_path, self.cleaned_dataset_path)
+        df = pd.read_excel(self.cleaned_dataset_path)
+        self.assertIn(grades_cleaner.fullname_column, df.columns, 'Final dataset missing full name column')
+        for column in self.columns_to_be_removed:
+            self.assertNotIn(column, df.columns, f"found column '{column}' in the cleaned dataset")
 
 
 if __name__ == '__main__':
