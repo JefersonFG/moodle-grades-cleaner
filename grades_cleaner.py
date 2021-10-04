@@ -21,6 +21,7 @@ def clean_dataset(source_dataset_path, target_dataset_path) -> None:
     The procedure will remove the first name and surname columns and add a complete name column instead."""
     df = pd.read_excel(source_dataset_path)
     df = join_name_columns(df)
+    df = remove_columns(df)
     with pd.ExcelWriter(target_dataset_path) as writer:
         df.to_excel(writer, index=False)
 
@@ -29,6 +30,12 @@ def join_name_columns(df) -> pd.DataFrame:
     """Combines first name and last name columns info one full name column."""
     df[fullname_column] = df[name_column] + ' ' + df[surname_column]
     df.drop([name_column, surname_column], axis=1, inplace=True)
+    return df
+
+
+def remove_columns(df) -> pd.DataFrame:
+    """Function that suppresses unnecessary columns from the dataset"""
+    df.drop([email_column, last_download_column], axis=1, inplace=True)
     return df
 
 
