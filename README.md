@@ -13,7 +13,7 @@ This project relies on the `pandas` module being available, as well as the `open
 You can run the script with python 3.9 passing the path to the grades to be cleaned and the path for the result to be saved to:
 
 ```bash
-python grades_cleaner.py moodle_logs.csv student_list.csv cleaned_moodle_logs.csv
+python grades_cleaner.py student_grades.xlsx cleaned_student_grades.xlsx
 ```
 
 ## Testing
